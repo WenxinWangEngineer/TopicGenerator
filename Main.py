@@ -12,7 +12,6 @@ This script will:
 @Date: April 4, 2024
 '''
 import os
-import cv2
 
 import FetchGnews
 import FetchImage
@@ -71,17 +70,7 @@ def main(topics):
                                                  video_file)
 
                     # pop up the video
-                    cap = cv2.VideoCapture(video_file)
-                    while (cap.isOpened()):
-                        ret, frame = cap.read()
-                        if ret:
-                            cv2.imshow('Video', frame)
-                            if cv2.waitKey(1) & 0xFF == ord('q'):
-                                break
-                        else:
-                            break
-                    cap.release()
-                    cv2.destroyAllWindows()
+                    os.system(f"open {video_file}")
 
                 else:
                     # TBD: setup default voice over captain without photo
