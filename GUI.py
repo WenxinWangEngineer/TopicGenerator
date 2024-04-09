@@ -1,5 +1,5 @@
 import tkinter as tk 
-from tkinter import filedialog, Text
+# from tkinter import filedialog, Text
 
 import Main
 
