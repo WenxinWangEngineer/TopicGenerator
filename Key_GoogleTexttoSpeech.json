@@ -1,4 +1,5 @@
 {
     "type": "service_account",
-    "project_id": "topicgenerator-419404"
+    "project_id": "topicgenerator-419404",
+    "private_key_id": "4834d8519f3fca1de1127c41d5ca818e55c4dfd9"
 }
