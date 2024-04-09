@@ -32,7 +32,7 @@ def main(topics):
     if not topics:
         print("Error: No topics provided")
         return None
-    
+
     for topic in topics:
         print(f"Fetching top 1 news for {topic}")
         top = 1
@@ -47,13 +47,10 @@ def main(topics):
                 # print the titles of the articles
                 print(article['title'])
 
-                # print the summarized content of the articles
-                summary = SummarizeNews.summarize_text(article['content'])
-
                 # generate voice over for the summarized content
                 voiceover_file = os.path.join(output_dir,
                                               f"voiceover{i}.mp3")
-                GenerateVoiceOver.generate_voice_over(summary,
+                GenerateVoiceOver.generate_voice_over(article['content'],
                                                       voiceover_file)
 
                 # fetch image for the topic
