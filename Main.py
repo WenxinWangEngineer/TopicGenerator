@@ -33,48 +33,56 @@ def main(topics):
         return None
 
     for topic in topics:
-        print(f"Fetching top 1 news for {topic}")
-        top = 1
-        articles = FetchGnews.fetch_news(topics, GNews_API_KEY)
 
-        for i, article in enumerate(articles):
+        articles = []
+        top = 3
+        print(f"Fetching top {top} news for each topic")
+
+        topic_articles = FetchGnews.fetch_news(topic, GNews_API_KEY)
+        articles.extend(topic_articles)
+
+        text_content = ""
+        for i, article in enumerate(topic_articles):
 
             if i == top:
                 break
             else:
-                print(f"Generating video for article {i}")
-                # print the titles of the articles
-                print(article['title'])
+                # print the title and description of the articles
+                text_content += article['title'] + article['description']
 
-                # generate voice over for the summarized content
-                voiceover_file = os.path.join(output_dir,
-                                              f"voiceover{i}.mp3")
-                GenerateVoiceOver.generate_voice_over(article['content'],
-                                                      voiceover_file)
+        # Split the text_content into chunks of 4000 characters each
 
-                # fetch image for the topic
-                print(article['title'])
-                image_url = FetchImage.fetch_image(article['title'],
-                                                   PEXELS_API_KEY)
+        text_chunks = [text_content[i:i+4000] for i in range(0, len(text_content), 4000)]
 
-                if image_url is not None:
-                    image_file = os.path.join(output_dir,
-                                              f"image{i}.jpg")
-                    FetchImage.download_image(image_url, image_file)
-                    # generate video
-                    video_file = os.path.join(output_dir,
-                                              f"video{i}.mp4")
-                    GenerateVideo.generate_video(image_file,
-                                                 voiceover_file,
-                                                 30,
-                                                 video_file)
+        voiceover_files = []
+        for i, text_chunk in enumerate(text_chunks):
+            # Generate a voiceover file for each chunk
+            voiceover_file = os.path.join(output_dir, f"voiceover{i}.mp3")
+            GenerateVoiceOver.generate_voice_over(text_chunk, voiceover_file)
+            voiceover_files.append(voiceover_file)
 
-                    # pop up the video
-                    os.system(f"open {video_file}")
+        # fetch image for the topic
+        image_urls = FetchImage.fetch_image(topic, PEXELS_API_KEY, top)
 
-                else:
-                    # TBD: setup default voice over captain without photo
-                    print(f"Error: No image found for {article['title']}")
+        if image_urls is not None:
+            image_files = []
+            for i, image_url in enumerate(image_urls):
+                image_file = os.path.join(output_dir, f"image{i}.jpg")
+                FetchImage.download_image(image_url, image_file)
+                image_files.append(image_file)
+
+            # generate video
+            video_file = os.path.join(output_dir, f"video{i}.mp4")
+            GenerateVideo.generate_video(image_files,
+                                         voiceover_files,
+                                         2,
+                                         video_file)
+
+            # pop up the video
+            os.system(f"open {video_file}")
+        else:
+            # TBD: setup default voice over captain without photo
+            print(f"Error: No image found for {article['title']}")
 
 
 if __name__ == "__main__":
