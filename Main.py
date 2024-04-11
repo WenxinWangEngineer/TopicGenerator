@@ -52,7 +52,8 @@ def main(topics):
 
         # Split the text_content into chunks of 4000 characters each
 
-        text_chunks = [text_content[i:i+4000] for i in range(0, len(text_content), 4000)]
+        text_chunks = [text_content[i:i+4000]
+                       for i in range(0, len(text_content), 4000)]
 
         voiceover_files = []
         for i, text_chunk in enumerate(text_chunks):
